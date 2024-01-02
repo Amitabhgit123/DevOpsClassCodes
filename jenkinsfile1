@@ -1,0 +1,45 @@
+pipeline{
+    agent any
+    environment{
+        giturl = "https://github.com/Amitabhgit123/cicdakshat.git"
+        compilegoal="compile"
+        testgoal="test"
+        qa1goal="pmd:pmd"
+        qa2goal="checkstyle:checkstyle"
+        packagegoal="package"
+    }
+    stages{
+        stage("Stage 1: checkout the code from github"){
+            steps{
+                git url:"${giturl}"
+            }
+        }
+        stage("Stage 2: compile the code"){
+            steps{
+                sh "mvn ${compilegoal}"
+            }
+        }
+        stage("Stage 3: test the functionality of the code"){
+            steps{
+                sh "mvn ${testgoal}"
+            }
+        }
+        stage("Stage 4: quality assurance of the code"){
+            steps{
+                sh "mvn ${qa1goal}"
+                echo "Generating the QA Reports"
+                recordIssues(tools: [pmdParser()])
+                
+                sh "mvn ${qa2goal}"
+                echo "Generating the QA Reports with checkStyle tool"
+                recordIssues(tools: [checkStyle()])
+                
+            }
+        }
+        stage("Stage 5: package the code"){
+            steps{
+                sh "mvn ${packagegoal}"
+            }
+        }
+    }
+}
