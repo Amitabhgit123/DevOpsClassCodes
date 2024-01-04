@@ -1,7 +1,7 @@
 pipeline{
     agent any
     environment{
-        giturl = "https://github.com/Amitabhgit123/cicdakshat.git"
+        giturl = "https://github.com/Amitabhgit123/DevOpsClassCodes.git"
         compilegoal="compile"
         testgoal="test"
         qa1goal="pmd:pmd"
@@ -29,11 +29,11 @@ pipeline{
                 sh "mvn ${qa1goal}"
                 echo "Generating the QA Reports"
                 recordIssues(tools: [pmdParser()])
-                
+               
                 sh "mvn ${qa2goal}"
                 echo "Generating the QA Reports with checkStyle tool"
                 recordIssues(tools: [checkStyle()])
-                
+               
             }
         }
         stage("Stage 5: package the code"){
